@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dgut.dao.UserDao">
+  <resultMap id="BaseResultMap" type="com.example.demo.dgut.model.User">
+    <id column="userId" jdbcType="INTEGER" property="userid" />
+    <result column="userName" jdbcType="VARCHAR" property="username" />
+    <result column="userPassword" jdbcType="VARCHAR" property="userpassword" />
+    <result column="phoneNum" jdbcType="VARCHAR" property="phonenum" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="userGender" jdbcType="VARCHAR" property="usergender" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    userId, userName, userPassword, phoneNum, email, userGender
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user
+    where userId = #{userid,jdbcType=INTEGER}
+  </select>
+  <select id="login" resultType="com.example.demo.dgut.model.User">
+    select
+    *
+    from user
+    where userName = #{userName,jdbcType=VARCHAR} and
+    userPassword = #{userPassword,jdbcType=VARCHAR}
+  </select>
+  <select id="loginByPhone" resultType="com.example.demo.dgut.model.User">
+    select
+    *
+    from user
+    where phoneNum = #{phoneNum,jdbcType=VARCHAR} and
+    userPassword = #{userPassword,jdbcType=VARCHAR}
+  </select>
+  <select id="isExistUser" resultType="com.example.demo.dgut.model.User">
+    select *
+    from user
+    where phoneNum = #{phoneNum,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from user
+    where userId = #{userid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="userId" keyProperty="userid" parameterType="com.example.demo.dgut.model.User" useGeneratedKeys="true">
+    insert into user (userName, userPassword, phoneNum,
+      email, userGender)
+    values (#{username,jdbcType=VARCHAR}, #{userpassword,jdbcType=VARCHAR}, #{phonenum,jdbcType=VARCHAR},
+      #{email,jdbcType=VARCHAR}, #{usergender,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="userId" keyProperty="userid" parameterType="com.example.demo.dgut.model.User" useGeneratedKeys="true">
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        userName,
+      </if>
+      <if test="userpassword != null">
+        userPassword,
+      </if>
+      <if test="phonenum != null">
+        phoneNum,
+      </if>
+      <if test="email != null">
+        email,
+      </if>
+      <if test="usergender != null">
+        userGender,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="username != null">
+        #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userpassword != null">
+        #{userpassword,jdbcType=VARCHAR},
+      </if>
+      <if test="phonenum != null">
+        #{phonenum,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="usergender != null">
+        #{usergender,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <insert id="register" parameterType="com.example.demo.dgut.model.User">
+    insert into user(username,userpassword,phonenum,email,usergender)
+    values (#{username},#{userpassword},#{phonenum},#{email},#{usergender})
+  </insert>
+  <update id="changePassword">
+    update user
+    set userPassword = #{userPassword,jdbcType=VARCHAR}
+    where userId = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.User">
+    update user
+    <set>
+      <if test="username != null">
+        userName = #{username,jdbcType=VARCHAR},
+      </if>
+      <if test="userpassword != null">
+        userPassword = #{userpassword,jdbcType=VARCHAR},
+      </if>
+      <if test="phonenum != null">
+        phoneNum = #{phonenum,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null">
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="usergender != null">
+        userGender = #{usergender,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userId = #{userid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.dgut.model.User">
+    update user
+    set userName = #{username,jdbcType=VARCHAR},
+      userPassword = #{userpassword,jdbcType=VARCHAR},
+      phoneNum = #{phonenum,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      userGender = #{usergender,jdbcType=VARCHAR}
+    where userId = #{userid,jdbcType=INTEGER}
+  </update>
+</mapper>
