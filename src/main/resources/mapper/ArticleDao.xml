@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dgut.dao.ArticleDao">
+  <resultMap id="BaseResultMap" type="com.example.demo.dgut.model.Article">
+    <id column="articleId" jdbcType="INTEGER" property="articleid" />
+    <result column="userId" jdbcType="INTEGER" property="userid" />
+    <result column="articleMd" jdbcType="VARCHAR" property="articlemd" />
+    <result column="articleHtml" jdbcType="VARCHAR" property="articlehtml" />
+    <result column="createTime" jdbcType="TIMESTAMP" property="createtime" />
+    <result column="isPermited" jdbcType="BIT" property="ispermited" />
+    <result column="articleTitle" jdbcType="VARCHAR" property="articletitle" />
+    <result column="articleCover" jdbcType="VARCHAR" property="articlecover" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
+    <result column="markdown" jdbcType="VARCHAR" property="markdown" />
+    <result column="thumbsUp" jdbcType="INTEGER" property="thumbsup" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    articleId, userId, articleMd, articleHtml, createTime, isPermited, articleTitle,
+    articleCover, `comment`, tag, markdown, thumbsUp
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from article
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </select>
+  <select id="getArticleByUserId" resultType="com.example.demo.dgut.model.Article">
+    select *
+    from article
+    where userId = #{userid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from article
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="articleId" keyProperty="articleid" parameterType="com.example.demo.dgut.model.Article" useGeneratedKeys="true">
+    insert into article (userId, articleMd, articleHtml,
+      createTime, isPermited, articleTitle,
+      articleCover, `comment`, tag,
+      markdown, thumbsUp)
+    values (#{userid,jdbcType=INTEGER}, #{articlemd,jdbcType=VARCHAR}, #{articlehtml,jdbcType=VARCHAR},
+      #{createtime,jdbcType=TIMESTAMP}, #{ispermited,jdbcType=BIT}, #{articletitle,jdbcType=VARCHAR},
+      #{articlecover,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR},
+      #{markdown,jdbcType=VARCHAR}, #{thumbsup,jdbcType=INTEGER})
+  </insert>
+  <insert id="saveArticle" parameterType="com.example.demo.dgut.model.Article">
+    insert into article(userid,articletitle,articlecover,comment,tag,markdown,thumbsup)
+    values (#{userid},#{articletitle},#{articlecover},#{comment},#{tag},#{markdown},#{thumbsup})
+  </insert>
+  <insert id="insertSelective" keyColumn="articleId" keyProperty="articleid" parameterType="com.example.demo.dgut.model.Article" useGeneratedKeys="true">
+    insert into article
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userId,
+      </if>
+      <if test="articlemd != null">
+        articleMd,
+      </if>
+      <if test="articlehtml != null">
+        articleHtml,
+      </if>
+      <if test="createtime != null">
+        createTime,
+      </if>
+      <if test="ispermited != null">
+        isPermited,
+      </if>
+      <if test="articletitle != null">
+        articleTitle,
+      </if>
+      <if test="articlecover != null">
+        articleCover,
+      </if>
+      <if test="comment != null">
+        `comment`,
+      </if>
+      <if test="tag != null">
+        tag,
+      </if>
+      <if test="markdown != null">
+        markdown,
+      </if>
+      <if test="thumbsup != null">
+        thumbsUp,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="articlemd != null">
+        #{articlemd,jdbcType=VARCHAR},
+      </if>
+      <if test="articlehtml != null">
+        #{articlehtml,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ispermited != null">
+        #{ispermited,jdbcType=BIT},
+      </if>
+      <if test="articletitle != null">
+        #{articletitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articlecover != null">
+        #{articlecover,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null">
+        #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="markdown != null">
+        #{markdown,jdbcType=VARCHAR},
+      </if>
+      <if test="thumbsup != null">
+        #{thumbsup,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.Article">
+    update article
+    <set>
+      <if test="userid != null">
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="articlemd != null">
+        articleMd = #{articlemd,jdbcType=VARCHAR},
+      </if>
+      <if test="articlehtml != null">
+        articleHtml = #{articlehtml,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null">
+        createTime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="ispermited != null">
+        isPermited = #{ispermited,jdbcType=BIT},
+      </if>
+      <if test="articletitle != null">
+        articleTitle = #{articletitle,jdbcType=VARCHAR},
+      </if>
+      <if test="articlecover != null">
+        articleCover = #{articlecover,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        `comment` = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="tag != null">
+        tag = #{tag,jdbcType=VARCHAR},
+      </if>
+      <if test="markdown != null">
+        markdown = #{markdown,jdbcType=VARCHAR},
+      </if>
+      <if test="thumbsup != null">
+        thumbsUp = #{thumbsup,jdbcType=INTEGER},
+      </if>
+    </set>
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.dgut.model.Article">
+    update article
+    set userId = #{userid,jdbcType=INTEGER},
+      articleMd = #{articlemd,jdbcType=VARCHAR},
+      articleHtml = #{articlehtml,jdbcType=VARCHAR},
+      createTime = #{createtime,jdbcType=TIMESTAMP},
+      isPermited = #{ispermited,jdbcType=BIT},
+      articleTitle = #{articletitle,jdbcType=VARCHAR},
+      articleCover = #{articlecover,jdbcType=VARCHAR},
+      `comment` = #{comment,jdbcType=VARCHAR},
+      tag = #{tag,jdbcType=VARCHAR},
+      markdown = #{markdown,jdbcType=VARCHAR},
+      thumbsUp = #{thumbsup,jdbcType=INTEGER}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+</mapper>

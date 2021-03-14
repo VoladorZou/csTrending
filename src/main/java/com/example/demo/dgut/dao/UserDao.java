@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Mapper
 @Repository
 public interface UserDao {
@@ -15,6 +17,13 @@ public interface UserDao {
     int insertSelective(User record);
 
     User selectByPrimaryKey(Integer userid);
+
+    int updateByPrimaryKeySelective(User record);
+
+    int updateByPrimaryKey(User record);
+
+    // 获取全部用户信息
+    List<User> getUserList();
 
     // 用户登录
     User login(@Param("userName") String userName, @Param("userPassword") String userPassword);
@@ -28,10 +37,15 @@ public interface UserDao {
     // 修改密码
     Boolean changePassword(@Param("userId") int userId, @Param("userPassword") String userPassword);
 
+    // 重置密码
+    Boolean resetPassword(@Param("phoneNum") String phoneNum, @Param("userPassword") String userPassword);
+
     // 根据手机号判断用户是否存在
     User isExistUser(String phoneNum);
 
-    int updateByPrimaryKeySelective(User record);
+    // 根据用户ID来获取用户信息
+    User getUserInfoDao(int userId);
 
-    int updateByPrimaryKey(User record);
+    // 上传用户头像
+    Boolean upLoadUserImageDao(@Param("userId") int userId, @Param("userImage") String userImage);
 }

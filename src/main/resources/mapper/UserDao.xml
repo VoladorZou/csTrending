@@ -8,9 +8,10 @@
     <result column="phoneNum" jdbcType="VARCHAR" property="phonenum" />
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="userGender" jdbcType="VARCHAR" property="usergender" />
+    <result column="userImage" jdbcType="VARCHAR" property="userimage" />
   </resultMap>
   <sql id="Base_Column_List">
-    userId, userName, userPassword, phoneNum, email, userGender
+    userId, userName, userPassword, phoneNum, email, userGender, userImage
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -32,10 +33,18 @@
     where phoneNum = #{phoneNum,jdbcType=VARCHAR} and
     userPassword = #{userPassword,jdbcType=VARCHAR}
   </select>
+  <select id="getUserList" resultType="com.example.demo.dgut.model.User">
+    select * from user
+  </select>
   <select id="isExistUser" resultType="com.example.demo.dgut.model.User">
     select *
     from user
     where phoneNum = #{phoneNum,jdbcType=VARCHAR}
+  </select>
+  <select id="getUserInfoDao" resultType="com.example.demo.dgut.model.User">
+    select *
+    from user
+    where userId = #{userid,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
@@ -43,9 +52,11 @@
   </delete>
   <insert id="insert" keyColumn="userId" keyProperty="userid" parameterType="com.example.demo.dgut.model.User" useGeneratedKeys="true">
     insert into user (userName, userPassword, phoneNum,
-      email, userGender)
+      email, userGender, userImage
+      )
     values (#{username,jdbcType=VARCHAR}, #{userpassword,jdbcType=VARCHAR}, #{phonenum,jdbcType=VARCHAR},
-      #{email,jdbcType=VARCHAR}, #{usergender,jdbcType=VARCHAR})
+      #{email,jdbcType=VARCHAR}, #{usergender,jdbcType=VARCHAR}, #{userimage,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="userId" keyProperty="userid" parameterType="com.example.demo.dgut.model.User" useGeneratedKeys="true">
     insert into user
@@ -65,6 +76,9 @@
       <if test="usergender != null">
         userGender,
       </if>
+      <if test="userimage != null">
+        userImage,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="username != null">
@@ -82,6 +96,9 @@
       <if test="usergender != null">
         #{usergender,jdbcType=VARCHAR},
       </if>
+      <if test="userimage != null">
+        #{userimage,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
   <insert id="register" parameterType="com.example.demo.dgut.model.User">
@@ -91,6 +108,16 @@
   <update id="changePassword">
     update user
     set userPassword = #{userPassword,jdbcType=VARCHAR}
+    where userId = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="resetPassword">
+    update user
+    set userPassword = #{userPassword,jdbcType=VARCHAR}
+    where phoneNum = #{phoneNum,jdbcType=VARCHAR}
+  </update>
+  <update id="upLoadUserImageDao">
+    update user
+    set userImage = #{userImage,jdbcType=VARCHAR}
     where userId = #{userId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.User">
@@ -111,6 +138,9 @@
       <if test="usergender != null">
         userGender = #{usergender,jdbcType=VARCHAR},
       </if>
+      <if test="userimage != null">
+        userImage = #{userimage,jdbcType=VARCHAR},
+      </if>
     </set>
     where userId = #{userid,jdbcType=INTEGER}
   </update>
@@ -120,7 +150,8 @@
       userPassword = #{userpassword,jdbcType=VARCHAR},
       phoneNum = #{phonenum,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
-      userGender = #{usergender,jdbcType=VARCHAR}
+      userGender = #{usergender,jdbcType=VARCHAR},
+      userImage = #{userimage,jdbcType=VARCHAR}
     where userId = #{userid,jdbcType=INTEGER}
   </update>
 </mapper>
