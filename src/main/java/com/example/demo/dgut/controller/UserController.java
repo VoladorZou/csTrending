@@ -2,12 +2,16 @@ package com.example.demo.dgut.controller;
 
 import com.aliyuncs.exceptions.ClientException;
 import com.example.demo.dgut.config.SendSmsConfig;
+import com.example.demo.dgut.dao.UserDao;
 import com.example.demo.dgut.model.Article;
 import com.example.demo.dgut.model.User;
 import com.example.demo.dgut.service.UserService;
 import com.example.demo.dgut.util.CodeUtils;
 import com.example.demo.dgut.util.EmailUtils;
 import com.example.demo.dgut.util.JsonDataResult;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -37,6 +41,8 @@ public class UserController {
 
     @Autowired
     public UserService userService;
+    @Autowired
+    private UserDao userDao;
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
@@ -159,6 +165,33 @@ public class UserController {
             List<User> userList;
             userList = userService.getUserList();
             return JsonDataResult.buildSuccess(userList);
+        }else {
+            return JsonDataResult.buildError("用户不存在或登录过期");
+        }
+    }
+
+    // 分页获取用户列表
+    @ApiOperation(value = "分页获取用户列表",notes = "分页查询数据")
+    @GetMapping("/getUserListByPage")
+    public JsonDataResult getUserListByPage(int pagenum, int pagesize, String query){
+        log.info("发起请求的pagenum：[{}]",pagenum);
+        log.info("发起请求的pagesize：[{}]",pagesize);
+        log.info("发起请求的pagesize：[{}]",query);
+        //查询缓存中是否存在
+        hasKey = stringRedisTemplate.hasKey(key);
+        if(hasKey){
+            if(query.length()==0){
+                PageHelper.startPage(pagenum,pagesize);
+                List<User> userList = userService.getUserList();
+                PageInfo<User> pageInfo = new PageInfo<User> (userList);
+                return JsonDataResult.buildSuccess(pageInfo);
+            }else {
+                PageHelper.startPage(pagenum,pagesize);
+                List<User> userList = userDao.getUserListByUserName(query);
+                PageInfo<User> pageInfo = new PageInfo<User> (userList);
+                return JsonDataResult.buildSuccess(pageInfo);
+            }
+
         }else {
             return JsonDataResult.buildError("用户不存在或登录过期");
         }

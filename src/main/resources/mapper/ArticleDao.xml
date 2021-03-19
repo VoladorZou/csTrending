@@ -30,6 +30,18 @@
     from article
     where userId = #{userid,jdbcType=INTEGER}
   </select>
+  <select id="getArticleByArticleId" resultType="com.example.demo.dgut.model.Article">
+    select *
+    from article
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </select>
+  <select id="getArticleList" resultType="com.example.demo.dgut.model.Article">
+    select * from article
+  </select>
+  <select id="getArticleListByArticle" resultType="com.example.demo.dgut.model.Article">
+    select * from article
+    where articleTitle like CONCAT('%',#{articletitle,jdbcType=VARCHAR},'%')
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from article
     where articleId = #{articleid,jdbcType=INTEGER}

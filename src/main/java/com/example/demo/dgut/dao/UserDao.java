@@ -1,5 +1,6 @@
 package com.example.demo.dgut.dao;
 
+import com.example.demo.dgut.model.Article;
 import com.example.demo.dgut.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -24,6 +25,9 @@ public interface UserDao {
 
     // 获取全部用户信息
     List<User> getUserList();
+
+    // 模糊查询（根据用户名来进行查询结果）
+    List<User> getUserListByUserName(String userName);
 
     // 用户登录
     User login(@Param("userName") String userName, @Param("userPassword") String userPassword);

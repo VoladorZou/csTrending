@@ -2,6 +2,7 @@ package com.example.demo.dgut.service.impl;
 
 import com.example.demo.dgut.dao.ArticleDao;
 import com.example.demo.dgut.model.Article;
+import com.example.demo.dgut.model.User;
 import com.example.demo.dgut.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,28 @@ public class ArticleServiceImpl implements ArticleService {
         try {
             List<Article> articleList;
             articleList = articleDao.getArticleByUserId(userId);
+            return articleList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public Article getArticleByArticleId(int articleid) {
+        try {
+            Article article = articleDao.getArticleByArticleId(articleid);
+            return article;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Article> getArticleList() {
+        try {
+            List<Article> articleList = articleDao.getArticleList();
             return articleList;
         } catch (Exception e) {
             e.printStackTrace();

@@ -36,6 +36,10 @@
   <select id="getUserList" resultType="com.example.demo.dgut.model.User">
     select * from user
   </select>
+  <select id="getUserListByUserName" resultType="com.example.demo.dgut.model.User">
+    select * from user
+    where userName like CONCAT('%',#{userName,jdbcType=VARCHAR},'%')
+  </select>
   <select id="isExistUser" resultType="com.example.demo.dgut.model.User">
     select *
     from user

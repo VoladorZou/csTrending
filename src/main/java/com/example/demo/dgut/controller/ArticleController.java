@@ -1,10 +1,13 @@
 package com.example.demo.dgut.controller;
 
+import com.example.demo.dgut.dao.ArticleDao;
 import com.example.demo.dgut.model.Article;
 import com.example.demo.dgut.model.User;
 import com.example.demo.dgut.service.ArticleService;
 import com.example.demo.dgut.service.UserService;
 import com.example.demo.dgut.util.JsonDataResult;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -31,6 +34,8 @@ public class ArticleController {
 
     @Autowired
     public ArticleService articleService;
+    @Autowired
+    private ArticleDao articleDao;
     // 文件日期
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
     // 判断当前操作结果
@@ -51,18 +56,53 @@ public class ArticleController {
         }
     }
 
-    // 获取文章
-    @ApiOperation(value = "获取文章信息", notes = "用户可以根据userid获取文章信息")
-    @GetMapping("/getArticleByUserId")
-    public JsonDataResult getArticleByUserId(int userid){
-        log.info("请求用户的id：[{}]",userid);
+    // 根据文章ID获取文章信息
+    @ApiOperation(value = "根据文章ID获取文章信息", notes = "用户可以根据articleid获取文章信息")
+    @GetMapping("/getArticleByArticleId")
+    public JsonDataResult getArticleByArticleId(int articleid){
+        log.info("发起请求的文章ID：[{}]",articleid);
         try {
-            List<Article> articleList;
-            articleList = articleService.getArticleByUserId(userid);
-            return JsonDataResult.buildSuccess(articleList);
+            Article article = articleService.getArticleByArticleId(articleid);
+            return JsonDataResult.buildSuccess(article);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonDataResult.buildError("失败");
+        }
+    }
+
+    // 根据用户ID获取文章信息
+    @ApiOperation(value = "根据用户ID获取文章信息", notes = "用户可以根据userid获取文章信息")
+    @GetMapping("/getArticleByUserId")
+    public JsonDataResult getArticleByUserId(int userid, int pagenum, int pagesize){
+        log.info("发起请求的用户id：[{}]",userid);
+        try {
+            PageHelper.startPage(pagenum, pagesize);
+            List<Article> articleList = articleService.getArticleByUserId(userid);
+            PageInfo<Article> pageInfo = new PageInfo<Article>(articleList);
+            return JsonDataResult.buildSuccess(pageInfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
+    // 分页获取文章列表
+    @ApiOperation(value = "分页获取文章列表",notes = "分页查询数据")
+    @GetMapping("/getArticleListByPage")
+    public JsonDataResult getArticleListByPage(int pagenum, int pagesize, String query){
+        log.info("发起请求的pagenum：[{}]",pagenum);
+        log.info("发起请求的pagesize：[{}]",pagesize);
+        log.info("发起请求的pagesize：[{}]",query);
+        if(query.length()==0) {
+            PageHelper.startPage(pagenum, pagesize);
+            List<Article> articleList = articleService.getArticleList();
+            PageInfo<Article> pageInfo = new PageInfo<Article>(articleList);
+            return JsonDataResult.buildSuccess(pageInfo);
+        }else {
+            PageHelper.startPage(pagenum, pagesize);
+            List<Article> articleList = articleDao.getArticleListByArticle(query);
+            PageInfo<Article> pageInfo = new PageInfo<Article>(articleList);
+            return JsonDataResult.buildSuccess(pageInfo);
         }
     }
 

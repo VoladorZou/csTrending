@@ -26,4 +26,13 @@ public interface ArticleDao {
 
     // 根据用户ID获取文章信息
     List<Article> getArticleByUserId(int userId);
+
+    // 根据文章ID获取文章信息
+    Article getArticleByArticleId(int articleid);
+
+    // 获取全部文章信息
+    List<Article> getArticleList();
+
+    // 模糊查询（根据文章标题来进行查询结果）
+    List<Article> getArticleListByArticle(String articleTitle);
 }
