@@ -35,6 +35,11 @@
     from article
     where articleId = #{articleid,jdbcType=INTEGER}
   </select>
+  <select id="getArticleByTag" resultType="com.example.demo.dgut.model.Article">
+    select *
+    from article
+    where tag = #{tag,jdbcType=VARCHAR}
+  </select>
   <select id="getArticleList" resultType="com.example.demo.dgut.model.Article">
     select * from article
   </select>
@@ -170,6 +175,21 @@
         thumbsUp = #{thumbsup,jdbcType=INTEGER},
       </if>
     </set>
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateMarkdown">
+    update article
+    set markdown = #{markdown,jdbcType=VARCHAR}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateArticle" parameterType="com.example.demo.dgut.model.Article">
+    update article
+    set tag = #{tag,jdbcType=VARCHAR} , articleCover = #{articlecover,jdbcType=VARCHAR}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="permitArticle">
+    update article
+    set isPermited = #{isPermited,jdbcType=BIT}
     where articleId = #{articleid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.example.demo.dgut.model.Article">

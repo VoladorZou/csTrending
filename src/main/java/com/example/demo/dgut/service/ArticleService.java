@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface ArticleService {
 
+    // 保存文章
     boolean saveArticle(Article save);
 
     // 根据用户ID获取文章信息

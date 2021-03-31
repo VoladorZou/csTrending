@@ -2,6 +2,7 @@ package com.example.demo.dgut.dao;
 
 import com.example.demo.dgut.model.Article;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -24,11 +25,23 @@ public interface ArticleDao {
     // 保存文章
     boolean saveArticle(Article save);
 
+    // 保存文章的其它信息
+    boolean updateArticle(Article update);
+
+    // 审核文章
+    boolean permitArticle(@Param("articleid") int articleid, @Param("isPermited") Boolean isPermited);
+
+    // 修改文章
+    boolean updateMarkdown(@Param("articleid") int articleid, @Param("markdown") String markdown);
+
     // 根据用户ID获取文章信息
     List<Article> getArticleByUserId(int userId);
 
     // 根据文章ID获取文章信息
     Article getArticleByArticleId(int articleid);
+
+    // 根据文章标签获取文章信息
+    List<Article> getArticleByTag(String tag);
 
     // 获取全部文章信息
     List<Article> getArticleList();

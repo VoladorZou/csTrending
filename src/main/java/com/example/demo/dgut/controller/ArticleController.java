@@ -56,6 +56,50 @@ public class ArticleController {
         }
     }
 
+    // 保存文章的其它信息
+    @ApiOperation(value = "保存文章的其它信息", notes = "用户可以将编辑好的文章的其它信息保存到服务器")
+    @PostMapping("/updateArticleTag")
+    public JsonDataResult updateArticleTag(@RequestBody Article article){
+        log.info("文章相关信息：[{}]",article.toString());
+        // 插入数据库
+        try {
+            return JsonDataResult.buildSuccess(articleDao.updateArticle(article));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
+    // 管理员审核文章
+    @ApiOperation(value = "管理员审核文章", notes = "")
+    @GetMapping("/permitArticle")
+    public JsonDataResult permitArticle(int articleid, boolean permit){
+        log.info("文章ID信息：[{}]",articleid);
+        log.info("文章ID信息：[{}]",permit);
+        // 插入数据库
+        try {
+            return JsonDataResult.buildSuccess(articleDao.permitArticle(articleid, permit));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
+    // 修改文章
+    @ApiOperation(value = "保存文章", notes = "用户可以将修改好的文章保存到服务器")
+    @PostMapping("/updateArticle")
+    public JsonDataResult updateArticle(@RequestBody Article article){
+        log.info("文章相关信息：[{}]",article.toString());
+        // 插入数据库
+        try {
+            operationResult = articleDao.updateMarkdown(article.getArticleid(),article.getMarkdown());
+            return JsonDataResult.buildSuccess(operationResult);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
     // 根据文章ID获取文章信息
     @ApiOperation(value = "根据文章ID获取文章信息", notes = "用户可以根据articleid获取文章信息")
     @GetMapping("/getArticleByArticleId")
@@ -64,6 +108,22 @@ public class ArticleController {
         try {
             Article article = articleService.getArticleByArticleId(articleid);
             return JsonDataResult.buildSuccess(article);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
+    // 根据文章标签获取文章信息
+    @ApiOperation(value = "根据文章标签获取文章信息", notes = "用户可以根据tag获取文章信息")
+    @GetMapping("/getArticleByTag")
+    public JsonDataResult getArticleByTag(String tag, int pagenum, int pagesize){
+        log.info("发起请求的文章标签：[{}]",tag);
+        try {
+            PageHelper.startPage(pagenum, pagesize);
+            List<Article> articleList = articleDao.getArticleByTag(tag);
+            PageInfo<Article> pageInfo = new PageInfo<Article>(articleList);
+            return JsonDataResult.buildSuccess(pageInfo);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonDataResult.buildError("失败");
@@ -106,24 +166,24 @@ public class ArticleController {
         }
     }
 
-    // md格式文章上传
-    @PostMapping("/saveArticleMd")
-    public String uploadProfilePhoto(@RequestParam MultipartFile uploadFile, HttpServletRequest req){
-        String realPath = "E:/csTrending/uploadFile/";
-            String format = sdf.format(new Date());
-            File folder = new File(realPath + format);
-            if (!folder.isDirectory()) {
-                folder.mkdirs();
-            }
-            String oldName = uploadFile.getOriginalFilename();
-            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
-            try {
-                uploadFile.transferTo(new File(folder, newName));
-                String filePath = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + "/uploadFile/" + format + newName;
-                return filePath;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-    }
+//    // md格式文章上传
+//    @PostMapping("/saveArticleMd")
+//    public String uploadProfilePhoto(@RequestParam MultipartFile uploadFile, HttpServletRequest req){
+//        String realPath = "E:/csTrending/uploadFile/";
+//            String format = sdf.format(new Date());
+//            File folder = new File(realPath + format);
+//            if (!folder.isDirectory()) {
+//                folder.mkdirs();
+//            }
+//            String oldName = uploadFile.getOriginalFilename();
+//            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
+//            try {
+//                uploadFile.transferTo(new File(folder, newName));
+//                String filePath = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + "/uploadFile/" + format + newName;
+//                return filePath;
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            return null;
+//    }
 }

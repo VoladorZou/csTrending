@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dgut.dao.FellowDao">
+  <resultMap id="BaseResultMap" type="com.example.demo.dgut.model.Fellow">
+    <id column="fellowId" jdbcType="INTEGER" property="fellowid" />
+    <result column="userId" jdbcType="INTEGER" property="userid" />
+    <result column="uploaderId" jdbcType="INTEGER" property="uploaderid" />
+    <result column="fellowTime" jdbcType="TIMESTAMP" property="fellowtime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    fellowId, userId, uploaderId, fellowTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from fellow
+    where fellowId = #{fellowid,jdbcType=INTEGER}
+  </select>
+  <select id="fellowState" resultType="boolean">
+    select COUNT(userId) from fellow
+    where userId = #{userId,jdbcType=INTEGER} and uploaderId = #{uploaderId,jdbcType=INTEGER} limit 1
+  </select>
+  <select id="getFellowList" resultType="com.example.demo.dgut.model.Fellow">
+    select * from fellow
+    where userId = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from fellow
+    where fellowId = #{fellowid,jdbcType=INTEGER}
+  </delete>
+  <delete id="unfellow">
+    delete from fellow
+    where userId = #{userId,jdbcType=INTEGER} and uploaderId = #{uploaderId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="fellowId" keyProperty="fellowid" parameterType="com.example.demo.dgut.model.Fellow" useGeneratedKeys="true">
+    insert into fellow (userId, uploaderId, fellowTime
+      )
+    values (#{userid,jdbcType=INTEGER}, #{uploaderid,jdbcType=INTEGER}, #{fellowtime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="fellowing">
+    insert into fellow(userId, uploaderId)
+    values (#{userId, jdbcType=INTEGER}, #{uploaderId, jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="fellowId" keyProperty="fellowid" parameterType="com.example.demo.dgut.model.Fellow" useGeneratedKeys="true">
+    insert into fellow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userId,
+      </if>
+      <if test="uploaderid != null">
+        uploaderId,
+      </if>
+      <if test="fellowtime != null">
+        fellowTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="uploaderid != null">
+        #{uploaderid,jdbcType=INTEGER},
+      </if>
+      <if test="fellowtime != null">
+        #{fellowtime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.Fellow">
+    update fellow
+    <set>
+      <if test="userid != null">
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="uploaderid != null">
+        uploaderId = #{uploaderid,jdbcType=INTEGER},
+      </if>
+      <if test="fellowtime != null">
+        fellowTime = #{fellowtime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where fellowId = #{fellowid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.dgut.model.Fellow">
+    update fellow
+    set userId = #{userid,jdbcType=INTEGER},
+      uploaderId = #{uploaderid,jdbcType=INTEGER},
+      fellowTime = #{fellowtime,jdbcType=TIMESTAMP}
+    where fellowId = #{fellowid,jdbcType=INTEGER}
+  </update>
+</mapper>

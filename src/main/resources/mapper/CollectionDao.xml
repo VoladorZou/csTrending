@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dgut.dao.CollectionDao">
+  <resultMap id="BaseResultMap" type="com.example.demo.dgut.model.Collection">
+    <id column="collectionId" jdbcType="INTEGER" property="collectionid" />
+    <result column="userId" jdbcType="INTEGER" property="userid" />
+    <result column="articleId" jdbcType="INTEGER" property="articleid" />
+    <result column="collectTime" jdbcType="TIMESTAMP" property="collecttime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    collectionId, userId, articleId, collectTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from collection
+    where collectionId = #{collectionid,jdbcType=INTEGER}
+  </select>
+  <select id="collectState" resultType="boolean">
+    select COUNT(userId) from collection
+    where userId = #{userId,jdbcType=INTEGER} and articleId = #{articleId,jdbcType=INTEGER} limit 1
+  </select>
+  <select id="getCollectionList" resultType="com.example.demo.dgut.model.Collection">
+    select * from collection
+    where userId = #{userId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from collection
+    where collectionId = #{collectionid,jdbcType=INTEGER}
+  </delete>
+  <delete id="uncollect">
+    delete from collection
+    where userId = #{userId,jdbcType=INTEGER} and articleId = #{articleId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="collectionId" keyProperty="collectionid" parameterType="com.example.demo.dgut.model.Collection" useGeneratedKeys="true">
+    insert into collection (userId, articleId, collectTime
+      )
+    values (#{userid,jdbcType=INTEGER}, #{articleid,jdbcType=INTEGER}, #{collecttime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="collecting">
+    insert into collection(userId, articleId)
+    values (#{userId, jdbcType=INTEGER}, #{articleId, jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" keyColumn="collectionId" keyProperty="collectionid" parameterType="com.example.demo.dgut.model.Collection" useGeneratedKeys="true">
+    insert into collection
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userId,
+      </if>
+      <if test="articleid != null">
+        articleId,
+      </if>
+      <if test="collecttime != null">
+        collectTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="articleid != null">
+        #{articleid,jdbcType=INTEGER},
+      </if>
+      <if test="collecttime != null">
+        #{collecttime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.Collection">
+    update collection
+    <set>
+      <if test="userid != null">
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="articleid != null">
+        articleId = #{articleid,jdbcType=INTEGER},
+      </if>
+      <if test="collecttime != null">
+        collectTime = #{collecttime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where collectionId = #{collectionid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.dgut.model.Collection">
+    update collection
+    set userId = #{userid,jdbcType=INTEGER},
+      articleId = #{articleid,jdbcType=INTEGER},
+      collectTime = #{collecttime,jdbcType=TIMESTAMP}
+    where collectionId = #{collectionid,jdbcType=INTEGER}
+  </update>
+</mapper>

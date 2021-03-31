@@ -126,7 +126,6 @@ public class UserController {
                         }else {
                             return JsonDataResult.buildError("注册失败");
                         }
-
                     }else {
                         return JsonDataResult.buildError("输入的验证码有误");
                     }
@@ -149,10 +148,20 @@ public class UserController {
         if(hasKey){
             int userId = Integer.parseInt(stringRedisTemplate.opsForValue().get(key));
             User userDB = userService.checkUserInfo(userId);
+            userDB.setUserpassword(null);
             return JsonDataResult.buildSuccess(userDB);
         }else {
             return JsonDataResult.buildError("用户不存在或登录过期");
         }
+    }
+
+    // 根据用户ID获取用户的数据
+    @ApiOperation(value = "根据用户ID获取用户的数据",notes = "")
+    @GetMapping("/getUserInfoByUserId")
+    public JsonDataResult getUserInfoByUserId(int userid){
+            User userDB = userDao.getUserInfoDao(userid);
+            userDB.setUserpassword(null);
+            return JsonDataResult.buildSuccess(userDB);
     }
 
     // 获取用户列表
@@ -162,8 +171,7 @@ public class UserController {
         //查询缓存中是否存在
         hasKey = stringRedisTemplate.hasKey(key);
         if(hasKey){
-            List<User> userList;
-            userList = userService.getUserList();
+            List<User> userList = userService.getUserList();
             return JsonDataResult.buildSuccess(userList);
         }else {
             return JsonDataResult.buildError("用户不存在或登录过期");
@@ -206,7 +214,7 @@ public class UserController {
             operationResult = stringRedisTemplate.expire(key, 1, TimeUnit.MICROSECONDS);//设置该Key立即过期
             return JsonDataResult.buildSuccess(operationResult);
         }else {
-            return JsonDataResult.buildError("用户不存在或登录过期");
+            return JsonDataResult.buildSuccess(true);
         }
     }
 
@@ -219,7 +227,7 @@ public class UserController {
         if(hasKey){
             int userId = Integer.parseInt(stringRedisTemplate.opsForValue().get(key));
             if(gotCode.equals(verifyCode)){
-                operationResult = userService.changePassword(userId,newPassword);
+                operationResult = userService.changePassword(userId, newPassword);
                 return JsonDataResult.buildSuccess(operationResult);
             }else {
                 return JsonDataResult.buildError("输入的验证码有误");
@@ -284,7 +292,7 @@ public class UserController {
     @ApiImplicitParam(paramType = "query", name = "photoFile", value = "所上传的图片", required = true)
     @PostMapping("/uploadProfilePhoto")
     public JsonDataResult uploadProfilePhoto(@RequestParam(value = "file") MultipartFile uploadFile, HttpServletRequest req){
-        //查询缓存中是否存在
+        //查询缓存中是否存在（token）
         hasKey = stringRedisTemplate.hasKey(key);
         if(hasKey) {
             String realPath = req.getSession().getServletContext().getRealPath("/uploadFile/");
