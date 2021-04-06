@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.demo.dgut.dao.MessageDao">
+  <resultMap id="BaseResultMap" type="com.example.demo.dgut.model.Message">
+    <id column="messageId" jdbcType="INTEGER" property="messageid" />
+    <result column="userId" jdbcType="INTEGER" property="userid" />
+    <result column="contact" jdbcType="VARCHAR" property="contact" />
+    <result column="context" jdbcType="VARCHAR" property="context" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    messageId, userId, contact, context
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from message
+    where messageId = #{messageid,jdbcType=INTEGER}
+  </select>
+  <select id="getMessageList" resultType="com.example.demo.dgut.model.Message">
+    select * from message
+  </select>
+  <select id="getMessageListByQuery" resultType="com.example.demo.dgut.model.Message">
+    select * from message
+    where context like CONCAT('%',#{Content,jdbcType=VARCHAR},'%')
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from message
+    where messageId = #{messageid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" keyColumn="messageId" keyProperty="messageid" parameterType="com.example.demo.dgut.model.Message" useGeneratedKeys="true">
+    insert into message (userId, contact, context
+      )
+    values (#{userid,jdbcType=INTEGER}, #{contact,jdbcType=VARCHAR}, #{context,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="sendMessage" parameterType="com.example.demo.dgut.model.Message">
+    insert into message (userId, contact, context)
+    values (#{userid,jdbcType=INTEGER}, #{contact,jdbcType=VARCHAR}, #{context,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" keyColumn="messageId" keyProperty="messageid" parameterType="com.example.demo.dgut.model.Message" useGeneratedKeys="true">
+    insert into message
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        userId,
+      </if>
+      <if test="contact != null">
+        contact,
+      </if>
+      <if test="context != null">
+        context,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="userid != null">
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="contact != null">
+        #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="context != null">
+        #{context,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.Message">
+    update message
+    <set>
+      <if test="userid != null">
+        userId = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="contact != null">
+        contact = #{contact,jdbcType=VARCHAR},
+      </if>
+      <if test="context != null">
+        context = #{context,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where messageId = #{messageid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.example.demo.dgut.model.Message">
+    update message
+    set userId = #{userid,jdbcType=INTEGER},
+      contact = #{contact,jdbcType=VARCHAR},
+      context = #{context,jdbcType=VARCHAR}
+    where messageId = #{messageid,jdbcType=INTEGER}
+  </update>
+</mapper>

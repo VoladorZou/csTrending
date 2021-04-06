@@ -98,7 +98,7 @@ public class UserController {
             // userId作为对应的value
             stringRedisTemplate.opsForValue().set(key, userDB.getUserid().toString(), 10, TimeUnit.MINUTES);//设置Redis中该Key的过期时间
             userDB.setUserpassword("");
-            return JsonDataResult.buildSuccess(userDB);
+            return JsonDataResult.buildSuccess(key);
         } catch (Exception e) {
             e.printStackTrace();
             return JsonDataResult.buildError("登录失败");
@@ -139,20 +139,19 @@ public class UserController {
         }
     }
 
-    // 获取当前用户的数据
-    @ApiOperation(value = "获取当前用户的数据",notes = "无需传入参数，后端会记录登录状态")
+    // 获取当前登录用户的数据
+    @ApiOperation(value = "获取当前登录用户的数据",notes = "无需传入参数，后端会记录登录状态")
     @GetMapping("/getUserInfo")
-    public JsonDataResult getUserInfo(){
+    public JsonDataResult getUserInfo(HttpServletRequest request){
+        String tokenInfo = request.getHeader("Authorization");
+//        System.out.println(tokenInfo);
         //查询缓存中是否存在
-        hasKey = stringRedisTemplate.hasKey(key);
-        if(hasKey){
-            int userId = Integer.parseInt(stringRedisTemplate.opsForValue().get(key));
+
+            int userId = Integer.parseInt(stringRedisTemplate.opsForValue().get(tokenInfo));
             User userDB = userService.checkUserInfo(userId);
             userDB.setUserpassword(null);
             return JsonDataResult.buildSuccess(userDB);
-        }else {
-            return JsonDataResult.buildError("用户不存在或登录过期");
-        }
+
     }
 
     // 根据用户ID获取用户的数据
@@ -295,8 +294,8 @@ public class UserController {
         //查询缓存中是否存在（token）
         hasKey = stringRedisTemplate.hasKey(key);
         if(hasKey) {
-            String realPath = req.getSession().getServletContext().getRealPath("/uploadFile/");
-//        String realPath = "E:/csTrending/uploadFile/";
+//            String realPath = req.getSession().getServletContext().getRealPath("/uploadFile/");
+        String realPath = "E:/csTrending/uploadFile/";
             System.out.println(realPath);
             String format = sdf.format(new Date());
             File folder = new File(realPath + format);

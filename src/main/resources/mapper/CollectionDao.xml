@@ -22,7 +22,7 @@
   </select>
   <select id="getCollectionList" resultType="com.example.demo.dgut.model.Collection">
     select * from collection
-    where userId = #{userId,jdbcType=INTEGER}
+    where userId = #{userId,jdbcType=INTEGER} ORDER BY collectTime DESC
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from collection

@@ -48,4 +48,7 @@ public interface ArticleDao {
 
     // 模糊查询（根据文章标题来进行查询结果）
     List<Article> getArticleListByArticle(String articleTitle);
+
+    // 上传文章封面
+    Boolean upLoadArticleCover(@Param("articleId") int articleId, @Param("articleCover") String articleCover);
 }

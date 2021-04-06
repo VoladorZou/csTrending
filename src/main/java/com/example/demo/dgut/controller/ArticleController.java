@@ -166,24 +166,26 @@ public class ArticleController {
         }
     }
 
-//    // md格式文章上传
-//    @PostMapping("/saveArticleMd")
-//    public String uploadProfilePhoto(@RequestParam MultipartFile uploadFile, HttpServletRequest req){
-//        String realPath = "E:/csTrending/uploadFile/";
-//            String format = sdf.format(new Date());
-//            File folder = new File(realPath + format);
-//            if (!folder.isDirectory()) {
-//                folder.mkdirs();
-//            }
-//            String oldName = uploadFile.getOriginalFilename();
-//            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
-//            try {
-//                uploadFile.transferTo(new File(folder, newName));
-//                String filePath = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + "/uploadFile/" + format + newName;
-//                return filePath;
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//            return null;
-//    }
+    @ApiOperation(value = "文章上传图片",notes = "")
+    @PostMapping("/upLoadArticleCover")
+    public JsonDataResult upLoadArticleCover(@RequestParam(value = "file") MultipartFile uploadFile, HttpServletRequest req){
+//            String realPath = req.getSession().getServletContext().getRealPath("/uploadFile/");
+        String realPath = "E:/csTrending/uploadFile/";
+            System.out.println(realPath);
+            String format = sdf.format(new Date());
+            File folder = new File(realPath + format);
+            if (!folder.isDirectory()) {
+                folder.mkdirs();
+            }
+            String oldName = uploadFile.getOriginalFilename();
+            String newName = UUID.randomUUID().toString() + oldName.substring(oldName.lastIndexOf("."), oldName.length());
+            try {
+                uploadFile.transferTo(new File(folder, newName));
+                String filePath = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort() + "/uploadFile/" + format + newName;
+                return JsonDataResult.buildSuccess(filePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return JsonDataResult.buildError("上传失败！");
+    }
 }

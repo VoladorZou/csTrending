@@ -28,7 +28,7 @@
   <select id="getArticleByUserId" resultType="com.example.demo.dgut.model.Article">
     select *
     from article
-    where userId = #{userid,jdbcType=INTEGER}
+    where userId = #{userid,jdbcType=INTEGER} ORDER BY createTime DESC
   </select>
   <select id="getArticleByArticleId" resultType="com.example.demo.dgut.model.Article">
     select *
@@ -176,6 +176,11 @@
       </if>
     </set>
     where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="upLoadArticleCover">
+    update user
+    set articleCover = #{articleCover,jdbcType=VARCHAR}
+    where articleId = #{articleId,jdbcType=INTEGER}
   </update>
   <update id="updateMarkdown">
     update article
