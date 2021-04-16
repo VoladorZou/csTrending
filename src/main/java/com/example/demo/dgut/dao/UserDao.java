@@ -44,6 +44,9 @@ public interface UserDao {
     // 重置密码
     Boolean resetPassword(@Param("phoneNum") String phoneNum, @Param("userPassword") String userPassword);
 
+    // 修改用户信息
+    Boolean setUserInfo(User user);
+
     // 根据手机号判断用户是否存在
     User isExistUser(String phoneNum);
 

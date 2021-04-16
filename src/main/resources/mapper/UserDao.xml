@@ -114,6 +114,13 @@
     set userPassword = #{userPassword,jdbcType=VARCHAR}
     where userId = #{userId,jdbcType=INTEGER}
   </update>
+  <update id="setUserInfo">
+    update user
+    set userPassword = #{userpassword,jdbcType=VARCHAR}, userName = #{username,jdbcType=VARCHAR},
+    phoneNum = #{phonenum,jdbcType=VARCHAR}, email = #{email,jdbcType=VARCHAR},
+    userGender = #{usergender,jdbcType=VARCHAR}, userImage = #{userimage,jdbcType=VARCHAR}
+    where userId = #{userid,jdbcType=INTEGER}
+  </update>
   <update id="resetPassword">
     update user
     set userPassword = #{userPassword,jdbcType=VARCHAR}

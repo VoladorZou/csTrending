@@ -23,11 +23,10 @@ public class InterceptorConfig extends WebMvcConfigurationSupport {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(getRedisInterceptor())
                 .addPathPatterns("/user/getUserInfo")        // 需要token验证的其他接口
-                .addPathPatterns("/user/setPhone")
-                .addPathPatterns("/user/setPwd")
+                .addPathPatterns("/user/setUserInfo")
                 .addPathPatterns("/user/logout")
-                .addPathPatterns("/user/changePhone")
-                .excludePathPatterns("/user/resetPwd")
+                .addPathPatterns("/user/getUserList")
+                .excludePathPatterns("/article/getArticleListByPage")
                 .excludePathPatterns("/user/sendEmail") // 放行发送邮箱接口
                 .excludePathPatterns("/user/sendVerifyCode") // 放行发送验证码接口
                 .excludePathPatterns("/user/login")
@@ -37,6 +36,7 @@ public class InterceptorConfig extends WebMvcConfigurationSupport {
     // 这个方法是用来配置静态资源的，比如html，js，css，等等
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        // 注意文件路径不能有空格，如 E: //csTrending 是无法识别的
         registry.addResourceHandler("/uploadFile/**").addResourceLocations("file:E:/csTrending/uploadFile/");
         super.addResourceHandlers(registry);
     }

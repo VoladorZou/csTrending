@@ -96,12 +96,16 @@ public class UserController {
         try {
             User userDB = userService.loginByPhone(user.getPhonenum(), user.getUserpassword());
             // userId作为对应的value
-            stringRedisTemplate.opsForValue().set(key, userDB.getUserid().toString(), 10, TimeUnit.MINUTES);//设置Redis中该Key的过期时间
+            if(userDB.getUsername().equals("admin")){
+                stringRedisTemplate.opsForValue().set(key, userDB.getUserid().toString(), 10, TimeUnit.MINUTES);//设置Redis中该Key的过期时间
+            }else {
+                stringRedisTemplate.opsForValue().set(key, userDB.getUserid().toString(), 30, TimeUnit.MINUTES);//设置Redis中该Key的过期时间
+            }
             userDB.setUserpassword("");
             return JsonDataResult.buildSuccess(key);
         } catch (Exception e) {
             e.printStackTrace();
-            return JsonDataResult.buildError("登录失败");
+            return JsonDataResult.buildError("手机号或密码错误");
         }
     }
 
@@ -114,8 +118,8 @@ public class UserController {
             return JsonDataResult.buildError("该手机号已存在");
         }else {
             try {
-                System.out.println(gotCode);
-                System.out.println(verifyCode);
+//                System.out.println(gotCode);
+//                System.out.println(verifyCode);
                 if(gotCode.length()!=0){
                     if(gotCode.equals(verifyCode)){
                         operationResult = userService.register(user);
@@ -146,7 +150,6 @@ public class UserController {
         String tokenInfo = request.getHeader("Authorization");
 //        System.out.println(tokenInfo);
         //查询缓存中是否存在
-
             int userId = Integer.parseInt(stringRedisTemplate.opsForValue().get(tokenInfo));
             User userDB = userService.checkUserInfo(userId);
             userDB.setUserpassword(null);
@@ -236,7 +239,7 @@ public class UserController {
         }
     }
 
-    // 重置用户密码
+    // 用户忘记密码时，重置用户密码
     @ApiOperation(value = "重置用户密码",notes = "用户忘记密码时，可通过手机验证码方式重置登录密码")
     @PostMapping("/resetPassword")
     public JsonDataResult resetPassword(@RequestBody User user, String gotCode){
@@ -250,6 +253,30 @@ public class UserController {
             }else {
                 return JsonDataResult.buildError("输入的验证码有误");
             }
+        }
+    }
+
+    // 登录状态，修改用户信息
+    @ApiOperation(value = "修改用户信息",notes = "登录状态")
+    @PostMapping("/setUserInfo")
+    public JsonDataResult setUserInfo(@RequestBody User user, String gotCode){
+        log.info("用户信息：[{}]",user.toString());
+        int userId = Integer.parseInt(stringRedisTemplate.opsForValue().get(key));
+        User loginUserDB = userDao.getUserInfoDao(userId);
+        if(user.getUserpassword() == null){
+            user.setUserpassword(loginUserDB.getUserpassword());
+        }
+        if(!userService.isExistUser(user.getPhonenum())){
+//            System.out.println(gotCode);
+            if(gotCode.equals(verifyCode)){
+                operationResult = userDao.setUserInfo(user);
+                return JsonDataResult.buildSuccess(operationResult);
+            }else {
+                return JsonDataResult.buildError("输入的验证码有误");
+            }
+        }else {
+            operationResult = userDao.setUserInfo(user);
+            return JsonDataResult.buildSuccess(operationResult);
         }
     }
 

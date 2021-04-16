@@ -6,6 +6,7 @@ import com.example.demo.dgut.model.User;
 import com.example.demo.dgut.service.ArticleService;
 import com.example.demo.dgut.service.UserService;
 import com.example.demo.dgut.util.JsonDataResult;
+import com.example.demo.dgut.util.MarkdownUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -40,12 +41,14 @@ public class ArticleController {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd/");
     // 判断当前操作结果
     private boolean operationResult;
+    //
 
     // 保存文章
     @ApiOperation(value = "保存文章", notes = "用户可以将编辑好的文章保存到服务器")
     @PostMapping("/saveArticle")
     public JsonDataResult saveArticle(@RequestBody Article article){
         log.info("文章相关信息：[{}]",article.toString());
+//        MarkdownUtil.markdownToHtml(article.getMarkdown());
         // 插入数据库
         try {
             operationResult = articleService.saveArticle(article);
@@ -170,6 +173,7 @@ public class ArticleController {
     @PostMapping("/upLoadArticleCover")
     public JsonDataResult upLoadArticleCover(@RequestParam(value = "file") MultipartFile uploadFile, HttpServletRequest req){
 //            String realPath = req.getSession().getServletContext().getRealPath("/uploadFile/");
+        // String realPath = "/opt/csTrending/uploadFile/";
         String realPath = "E:/csTrending/uploadFile/";
             System.out.println(realPath);
             String format = sdf.format(new Date());
