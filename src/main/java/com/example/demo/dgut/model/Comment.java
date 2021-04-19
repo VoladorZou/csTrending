@@ -35,5 +35,15 @@ public class Comment implements Serializable {
      */
     private Integer articleid;
 
+    /**
+     * 审核状态
+     */
+    private Boolean ispermited;
+
+    /**
+     * 删除状态
+     */
+    private Boolean isdeleted;
+
     private static final long serialVersionUID = 1L;
 }

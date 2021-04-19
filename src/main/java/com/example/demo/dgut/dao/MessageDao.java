@@ -25,7 +25,7 @@ public interface MessageDao {
     // 留言
     boolean sendMessage(Message message);
 
-    // 获取所有评论
+    // 获取所有留言
     List<Message> getMessageList();
 
     // 模糊查询（根据查询内容来进行查询结果）

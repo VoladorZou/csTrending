@@ -9,9 +9,12 @@
     <result column="email" jdbcType="VARCHAR" property="email" />
     <result column="userGender" jdbcType="VARCHAR" property="usergender" />
     <result column="userImage" jdbcType="VARCHAR" property="userimage" />
+    <result column="isDeleted" jdbcType="BIT" property="isdeleted" />
+    <result column="isBanned" jdbcType="BIT" property="isbanned" />
   </resultMap>
   <sql id="Base_Column_List">
-    userId, userName, userPassword, phoneNum, email, userGender, userImage
+    userId, userName, userPassword, phoneNum, email, userGender, userImage, isDeleted,
+    isBanned
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -34,7 +37,7 @@
     userPassword = #{userPassword,jdbcType=VARCHAR}
   </select>
   <select id="getUserList" resultType="com.example.demo.dgut.model.User">
-    select * from user
+    select * from user WHERE isDeleted = 0
   </select>
   <select id="getUserListByUserName" resultType="com.example.demo.dgut.model.User">
     select * from user
@@ -56,11 +59,11 @@
   </delete>
   <insert id="insert" keyColumn="userId" keyProperty="userid" parameterType="com.example.demo.dgut.model.User" useGeneratedKeys="true">
     insert into user (userName, userPassword, phoneNum,
-      email, userGender, userImage
-      )
+      email, userGender, userImage,
+      isDeleted, isBanned)
     values (#{username,jdbcType=VARCHAR}, #{userpassword,jdbcType=VARCHAR}, #{phonenum,jdbcType=VARCHAR},
-      #{email,jdbcType=VARCHAR}, #{usergender,jdbcType=VARCHAR}, #{userimage,jdbcType=VARCHAR}
-      )
+      #{email,jdbcType=VARCHAR}, #{usergender,jdbcType=VARCHAR}, #{userimage,jdbcType=VARCHAR},
+      #{isdeleted,jdbcType=BIT}, #{isbanned,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" keyColumn="userId" keyProperty="userid" parameterType="com.example.demo.dgut.model.User" useGeneratedKeys="true">
     insert into user
@@ -83,6 +86,12 @@
       <if test="userimage != null">
         userImage,
       </if>
+      <if test="isdeleted != null">
+        isDeleted,
+      </if>
+      <if test="isbanned != null">
+        isBanned,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="username != null">
@@ -103,6 +112,12 @@
       <if test="userimage != null">
         #{userimage,jdbcType=VARCHAR},
       </if>
+      <if test="isdeleted != null">
+        #{isdeleted,jdbcType=BIT},
+      </if>
+      <if test="isbanned != null">
+        #{isbanned,jdbcType=BIT},
+      </if>
     </trim>
   </insert>
   <insert id="register" parameterType="com.example.demo.dgut.model.User">
@@ -112,6 +127,11 @@
   <update id="changePassword">
     update user
     set userPassword = #{userPassword,jdbcType=VARCHAR}
+    where userId = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="permitUser">
+    update user
+    set isBanned = #{isPermited,jdbcType=BIT}
     where userId = #{userId,jdbcType=INTEGER}
   </update>
   <update id="setUserInfo">
@@ -129,6 +149,11 @@
   <update id="upLoadUserImageDao">
     update user
     set userImage = #{userImage,jdbcType=VARCHAR}
+    where userId = #{userId,jdbcType=INTEGER}
+  </update>
+  <update id="deleteUserByUserId">
+    update user
+    set isDeleted = #{isDeleted,jdbcType=VARCHAR}
     where userId = #{userId,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.User">
@@ -152,6 +177,12 @@
       <if test="userimage != null">
         userImage = #{userimage,jdbcType=VARCHAR},
       </if>
+      <if test="isdeleted != null">
+        isDeleted = #{isdeleted,jdbcType=BIT},
+      </if>
+      <if test="isbanned != null">
+        isBanned = #{isbanned,jdbcType=BIT},
+      </if>
     </set>
     where userId = #{userid,jdbcType=INTEGER}
   </update>
@@ -162,7 +193,9 @@
       phoneNum = #{phonenum,jdbcType=VARCHAR},
       email = #{email,jdbcType=VARCHAR},
       userGender = #{usergender,jdbcType=VARCHAR},
-      userImage = #{userimage,jdbcType=VARCHAR}
+      userImage = #{userimage,jdbcType=VARCHAR},
+      isDeleted = #{isdeleted,jdbcType=BIT},
+      isBanned = #{isbanned,jdbcType=BIT}
     where userId = #{userid,jdbcType=INTEGER}
   </update>
 </mapper>

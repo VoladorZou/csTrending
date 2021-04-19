@@ -110,6 +110,7 @@ public class ArticleController {
         log.info("发起请求的文章ID：[{}]",articleid);
         try {
             Article article = articleService.getArticleByArticleId(articleid);
+            articleDao.recordViews(articleid);
             return JsonDataResult.buildSuccess(article);
         } catch (Exception e) {
             e.printStackTrace();

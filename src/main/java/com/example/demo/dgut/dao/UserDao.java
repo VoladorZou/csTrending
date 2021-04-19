@@ -1,6 +1,5 @@
 package com.example.demo.dgut.dao;
 
-import com.example.demo.dgut.model.Article;
 import com.example.demo.dgut.model.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -46,6 +45,12 @@ public interface UserDao {
 
     // 修改用户信息
     Boolean setUserInfo(User user);
+
+    // 审核文章
+    boolean permitUser(@Param("userId") int userId, @Param("isPermited") Boolean isPermited);
+
+    // 删除用户信息
+    Boolean deleteUserByUserId(@Param("userId")  int userId, @Param("isDeleted") boolean isDeleted);
 
     // 根据手机号判断用户是否存在
     User isExistUser(String phoneNum);

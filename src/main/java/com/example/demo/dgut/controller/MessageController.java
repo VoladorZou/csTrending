@@ -37,6 +37,18 @@ public class MessageController {
         }
     }
 
+    // 删除留言
+    @ApiOperation(value = "留言",notes = "用户、游客给开发者使用反馈或建议")
+    @GetMapping("/deleteByPrimaryKey")
+    public JsonDataResult deleteByPrimaryKey(int messageid) {
+        try {
+            return JsonDataResult.buildSuccess(messageDao.deleteByPrimaryKey(messageid));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
     // 分页获取留言数据
     @ApiOperation(value = "分页获取文章列表",notes = "分页查询数据")
     @GetMapping("/getMessageListByPage")

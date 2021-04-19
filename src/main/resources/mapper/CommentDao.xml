@@ -7,9 +7,11 @@
     <result column="commentTime" jdbcType="TIMESTAMP" property="commenttime" />
     <result column="userId" jdbcType="INTEGER" property="userid" />
     <result column="articleId" jdbcType="INTEGER" property="articleid" />
+    <result column="isPermited" jdbcType="BIT" property="ispermited" />
+    <result column="isDeleted" jdbcType="BIT" property="isdeleted" />
   </resultMap>
   <sql id="Base_Column_List">
-    commentId, commentContent, commentTime, userId, articleId
+    commentId, commentContent, commentTime, userId, articleId, isPermited, isDeleted
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -18,7 +20,7 @@
     where commentId = #{commentid,jdbcType=INTEGER}
   </select>
   <select id="getCommentList" resultType="com.example.demo.dgut.model.Comment">
-    select * from comment
+    select * from comment WHERE isDeleted = 0
   </select>
   <select id="getCommentListByQuery" resultType="com.example.demo.dgut.model.Comment">
     select * from comment
@@ -38,9 +40,11 @@
   </insert>
   <insert id="insert" keyColumn="commentId" keyProperty="commentid" parameterType="com.example.demo.dgut.model.Comment" useGeneratedKeys="true">
     insert into comment (commentContent, commentTime, userId,
-      articleId)
+      articleId, isPermited, isDeleted
+      )
     values (#{commentcontent,jdbcType=VARCHAR}, #{commenttime,jdbcType=TIMESTAMP}, #{userid,jdbcType=INTEGER},
-      #{articleid,jdbcType=INTEGER})
+      #{articleid,jdbcType=INTEGER}, #{ispermited,jdbcType=BIT}, #{isdeleted,jdbcType=BIT}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="commentId" keyProperty="commentid" parameterType="com.example.demo.dgut.model.Comment" useGeneratedKeys="true">
     insert into comment
@@ -57,6 +61,12 @@
       <if test="articleid != null">
         articleId,
       </if>
+      <if test="ispermited != null">
+        isPermited,
+      </if>
+      <if test="isdeleted != null">
+        isDeleted,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="commentcontent != null">
@@ -70,6 +80,12 @@
       </if>
       <if test="articleid != null">
         #{articleid,jdbcType=INTEGER},
+      </if>
+      <if test="ispermited != null">
+        #{ispermited,jdbcType=BIT},
+      </if>
+      <if test="isdeleted != null">
+        #{isdeleted,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -88,7 +104,23 @@
       <if test="articleid != null">
         articleId = #{articleid,jdbcType=INTEGER},
       </if>
+      <if test="ispermited != null">
+        isPermited = #{ispermited,jdbcType=BIT},
+      </if>
+      <if test="isdeleted != null">
+        isDeleted = #{isdeleted,jdbcType=BIT},
+      </if>
     </set>
+    where commentId = #{commentid,jdbcType=INTEGER}
+  </update>
+  <update id="permitComment">
+    update comment
+    set isPermited = #{isPermited,jdbcType=BIT}
+    where commentId = #{commentid,jdbcType=INTEGER}
+  </update>
+  <update id="deleteComment">
+    update comment
+    set isDeleted = #{deleteFlag,jdbcType=BIT}
     where commentId = #{commentid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.example.demo.dgut.model.Comment">
@@ -96,7 +128,9 @@
     set commentContent = #{commentcontent,jdbcType=VARCHAR},
       commentTime = #{commenttime,jdbcType=TIMESTAMP},
       userId = #{userid,jdbcType=INTEGER},
-      articleId = #{articleid,jdbcType=INTEGER}
+      articleId = #{articleid,jdbcType=INTEGER},
+      isPermited = #{ispermited,jdbcType=BIT},
+      isDeleted = #{isdeleted,jdbcType=BIT}
     where commentId = #{commentid,jdbcType=INTEGER}
   </update>
 </mapper>

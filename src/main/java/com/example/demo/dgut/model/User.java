@@ -44,5 +44,15 @@ public class User implements Serializable {
      */
     private String userimage;
 
+    /**
+     * 删除状态
+     */
+    private Boolean isdeleted;
+
+    /**
+     * 封禁状态
+     */
+    private Boolean isbanned;
+
     private static final long serialVersionUID = 1L;
 }

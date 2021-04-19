@@ -157,6 +157,13 @@ public class UserController {
 
     }
 
+    // 删除用户（软删除）
+    @ApiOperation(value = "根据用户ID获取用户的数据",notes = "")
+    @GetMapping("/deleteUserByUserId")
+    public JsonDataResult deleteUserByUserId(int userid, boolean isdeleted){
+        return JsonDataResult.buildSuccess(userDao.deleteUserByUserId(userid,isdeleted));
+    }
+
     // 根据用户ID获取用户的数据
     @ApiOperation(value = "根据用户ID获取用户的数据",notes = "")
     @GetMapping("/getUserInfoByUserId")
@@ -177,6 +184,20 @@ public class UserController {
             return JsonDataResult.buildSuccess(userList);
         }else {
             return JsonDataResult.buildError("用户不存在或登录过期");
+        }
+    }
+
+    // 管理员审核用户
+    @ApiOperation(value = "管理员审核用户", notes = "")
+    @GetMapping("/permitUser")
+    public JsonDataResult permitUser(int userid, boolean permit){
+        log.info("文章ID信息：[{}]",permit);
+        // 插入数据库
+        try {
+            return JsonDataResult.buildSuccess(userDao.permitUser(userid, permit));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
         }
     }
 

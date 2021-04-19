@@ -70,5 +70,15 @@ public class Article implements Serializable {
      */
     private Integer thumbsup;
 
+    /**
+     * 删除状态
+     */
+    private Boolean isdeleted;
+
+    /**
+     * 浏览量
+     */
+    private Integer views;
+
     private static final long serialVersionUID = 1L;
 }

@@ -28,6 +28,9 @@ public interface ArticleDao {
     // 保存文章的其它信息
     boolean updateArticle(Article update);
 
+    // 记录阅读量
+    boolean recordViews(int articleid);
+
     // 审核文章
     boolean permitArticle(@Param("articleid") int articleid, @Param("isPermited") Boolean isPermited);
 

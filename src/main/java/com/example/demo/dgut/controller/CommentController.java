@@ -56,6 +56,35 @@ public class CommentController {
         }
     }
 
+    // 管理员审核评论
+    @ApiOperation(value = "管理员审核评论", notes = "")
+    @GetMapping("/permitComment")
+    public JsonDataResult permitArticle(int commentid, boolean permit){
+        log.info("文章ID信息：[{}]",commentid);
+        log.info("文章ID信息：[{}]",permit);
+        // 插入数据库
+        try {
+            return JsonDataResult.buildSuccess(commentDao.permitComment(commentid, permit));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
+    // 管理员删除评论
+    @ApiOperation(value = "管理员删除评论", notes = "")
+    @GetMapping("/deleteComment")
+    public JsonDataResult deleteComment(int commentid, boolean deleteFlag){
+        log.info("文章ID信息：[{}]",commentid);
+        // 插入数据库
+        try {
+            return JsonDataResult.buildSuccess(commentDao.deleteComment(commentid, deleteFlag));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
     // 分页查询评论
     @ApiOperation(value = "分页获取文章列表",notes = "分页查询数据")
     @GetMapping("/getCommentListByPage")
