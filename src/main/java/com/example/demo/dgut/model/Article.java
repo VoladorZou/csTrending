@@ -61,7 +61,7 @@ public class Article implements Serializable {
     private String tag;
 
     /**
-     * 测试mysql方式存储md
+     * md文本
      */
     private String markdown;
 
@@ -79,6 +79,11 @@ public class Article implements Serializable {
      * 浏览量
      */
     private Integer views;
+
+    /**
+     * html文本
+     */
+    private String htmlcode;
 
     private static final long serialVersionUID = 1L;
 }

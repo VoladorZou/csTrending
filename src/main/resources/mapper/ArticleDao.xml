@@ -16,10 +16,11 @@
     <result column="thumbsUp" jdbcType="INTEGER" property="thumbsup" />
     <result column="isDeleted" jdbcType="BIT" property="isdeleted" />
     <result column="views" jdbcType="INTEGER" property="views" />
+    <result column="htmlCode" jdbcType="VARCHAR" property="htmlcode" />
   </resultMap>
   <sql id="Base_Column_List">
     articleId, userId, articleMd, articleHtml, createTime, isPermited, articleTitle,
-    articleCover, `comment`, tag, markdown, thumbsUp, isDeleted, views
+    articleCover, `comment`, tag, markdown, thumbsUp, isDeleted, views, htmlCode
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -40,7 +41,7 @@
   <select id="getArticleByTag" resultType="com.example.demo.dgut.model.Article">
     select *
     from article
-    where tag = #{tag,jdbcType=VARCHAR}
+    where tag = #{tag,jdbcType=VARCHAR} and isPermited = true order by createTime desc
   </select>
   <select id="getArticleList" resultType="com.example.demo.dgut.model.Article">
     select * from article
@@ -58,16 +59,12 @@
       createTime, isPermited, articleTitle,
       articleCover, `comment`, tag,
       markdown, thumbsUp, isDeleted,
-      views)
+      views, htmlCode)
     values (#{userid,jdbcType=INTEGER}, #{articlemd,jdbcType=VARCHAR}, #{articlehtml,jdbcType=VARCHAR},
       #{createtime,jdbcType=TIMESTAMP}, #{ispermited,jdbcType=BIT}, #{articletitle,jdbcType=VARCHAR},
       #{articlecover,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR},
       #{markdown,jdbcType=VARCHAR}, #{thumbsup,jdbcType=INTEGER}, #{isdeleted,jdbcType=BIT},
-      #{views,jdbcType=INTEGER})
-  </insert>
-  <insert id="saveArticle" parameterType="com.example.demo.dgut.model.Article">
-    insert into article(userid,articletitle,articlecover,comment,tag,markdown,thumbsup)
-    values (#{userid},#{articletitle},#{articlecover},#{comment},#{tag},#{markdown},#{thumbsup})
+      #{views,jdbcType=INTEGER}, #{htmlcode,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" keyColumn="articleId" keyProperty="articleid" parameterType="com.example.demo.dgut.model.Article" useGeneratedKeys="true">
     insert into article
@@ -111,6 +108,9 @@
       <if test="views != null">
         views,
       </if>
+      <if test="htmlcode != null">
+        htmlCode,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userid != null">
@@ -152,7 +152,14 @@
       <if test="views != null">
         #{views,jdbcType=INTEGER},
       </if>
+      <if test="htmlcode != null">
+        #{htmlcode,jdbcType=VARCHAR},
+      </if>
     </trim>
+  </insert>
+  <insert id="saveArticle" parameterType="com.example.demo.dgut.model.Article">
+    insert into article(userid,articletitle,articlecover,comment,tag,markdown,thumbsup,htmlcode)
+    values (#{userid},#{articletitle},#{articlecover},#{comment},#{tag},#{markdown},#{thumbsup},#{htmlcode})
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.Article">
     update article
@@ -196,6 +203,9 @@
       <if test="views != null">
         views = #{views,jdbcType=INTEGER},
       </if>
+      <if test="htmlcode != null">
+        htmlCode = #{htmlcode,jdbcType=VARCHAR},
+      </if>
     </set>
     where articleId = #{articleid,jdbcType=INTEGER}
   </update>
@@ -238,7 +248,8 @@
       markdown = #{markdown,jdbcType=VARCHAR},
       thumbsUp = #{thumbsup,jdbcType=INTEGER},
       isDeleted = #{isdeleted,jdbcType=BIT},
-      views = #{views,jdbcType=INTEGER}
+      views = #{views,jdbcType=INTEGER},
+      htmlCode = #{htmlcode,jdbcType=VARCHAR}
     where articleId = #{articleid,jdbcType=INTEGER}
   </update>
 </mapper>

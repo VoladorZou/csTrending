@@ -164,6 +164,13 @@ public class UserController {
         return JsonDataResult.buildSuccess(userDao.deleteUserByUserId(userid,isdeleted));
     }
 
+    // 设置管理员
+    @ApiOperation(value = "设置管理员",notes = "")
+    @GetMapping("/settingAdmin")
+    public JsonDataResult settingAdmin(int userid, boolean isadmin){
+        return JsonDataResult.buildSuccess(userDao.settingAdmin(userid,isadmin));
+    }
+
     // 根据用户ID获取用户的数据
     @ApiOperation(value = "根据用户ID获取用户的数据",notes = "")
     @GetMapping("/getUserInfoByUserId")

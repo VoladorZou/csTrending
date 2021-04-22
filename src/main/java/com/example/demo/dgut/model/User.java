@@ -54,5 +54,10 @@ public class User implements Serializable {
      */
     private Boolean isbanned;
 
+    /**
+     * 是否为管理员
+     */
+    private Boolean isadmin;
+
     private static final long serialVersionUID = 1L;
 }

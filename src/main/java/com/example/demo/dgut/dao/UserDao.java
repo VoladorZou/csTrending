@@ -52,6 +52,9 @@ public interface UserDao {
     // 删除用户信息
     Boolean deleteUserByUserId(@Param("userId")  int userId, @Param("isDeleted") boolean isDeleted);
 
+    // 设置管理员
+    Boolean settingAdmin(@Param("userId")  int userId, @Param("isAdmin") boolean isAdmin);
+
     // 根据手机号判断用户是否存在
     User isExistUser(String phoneNum);
 

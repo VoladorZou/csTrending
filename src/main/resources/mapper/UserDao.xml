@@ -11,10 +11,11 @@
     <result column="userImage" jdbcType="VARCHAR" property="userimage" />
     <result column="isDeleted" jdbcType="BIT" property="isdeleted" />
     <result column="isBanned" jdbcType="BIT" property="isbanned" />
+    <result column="isAdmin" jdbcType="BIT" property="isadmin" />
   </resultMap>
   <sql id="Base_Column_List">
     userId, userName, userPassword, phoneNum, email, userGender, userImage, isDeleted,
-    isBanned
+    isBanned, isAdmin
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -60,10 +61,10 @@
   <insert id="insert" keyColumn="userId" keyProperty="userid" parameterType="com.example.demo.dgut.model.User" useGeneratedKeys="true">
     insert into user (userName, userPassword, phoneNum,
       email, userGender, userImage,
-      isDeleted, isBanned)
+      isDeleted, isBanned, isAdmin)
     values (#{username,jdbcType=VARCHAR}, #{userpassword,jdbcType=VARCHAR}, #{phonenum,jdbcType=VARCHAR},
       #{email,jdbcType=VARCHAR}, #{usergender,jdbcType=VARCHAR}, #{userimage,jdbcType=VARCHAR},
-      #{isdeleted,jdbcType=BIT}, #{isbanned,jdbcType=BIT})
+      #{isdeleted,jdbcType=BIT}, #{isbanned,jdbcType=BIT}, #{isadmin,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" keyColumn="userId" keyProperty="userid" parameterType="com.example.demo.dgut.model.User" useGeneratedKeys="true">
     insert into user
@@ -92,6 +93,9 @@
       <if test="isbanned != null">
         isBanned,
       </if>
+      <if test="isadmin != null">
+        isAdmin,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="username != null">
@@ -117,6 +121,9 @@
       </if>
       <if test="isbanned != null">
         #{isbanned,jdbcType=BIT},
+      </if>
+      <if test="isadmin != null">
+        #{isadmin,jdbcType=BIT},
       </if>
     </trim>
   </insert>
@@ -156,6 +163,11 @@
     set isDeleted = #{isDeleted,jdbcType=VARCHAR}
     where userId = #{userId,jdbcType=INTEGER}
   </update>
+  <update id="settingAdmin">
+    update user
+    set isAdmin = #{isAdmin,jdbcType=VARCHAR}
+    where userId = #{userId,jdbcType=INTEGER}
+  </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.User">
     update user
     <set>
@@ -183,6 +195,9 @@
       <if test="isbanned != null">
         isBanned = #{isbanned,jdbcType=BIT},
       </if>
+      <if test="isadmin != null">
+        isAdmin = #{isadmin,jdbcType=BIT},
+      </if>
     </set>
     where userId = #{userid,jdbcType=INTEGER}
   </update>
@@ -195,7 +210,8 @@
       userGender = #{usergender,jdbcType=VARCHAR},
       userImage = #{userimage,jdbcType=VARCHAR},
       isDeleted = #{isdeleted,jdbcType=BIT},
-      isBanned = #{isbanned,jdbcType=BIT}
+      isBanned = #{isbanned,jdbcType=BIT},
+      isAdmin = #{isadmin,jdbcType=BIT}
     where userId = #{userid,jdbcType=INTEGER}
   </update>
 </mapper>
