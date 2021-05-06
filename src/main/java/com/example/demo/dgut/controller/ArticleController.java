@@ -88,6 +88,21 @@ public class ArticleController {
         }
     }
 
+    // 删除文章
+    @ApiOperation(value = "删除文章", notes = "")
+    @GetMapping("/deleteArticle")
+    public JsonDataResult deleteArticle(int articleid, boolean permit){
+        log.info("文章ID信息：[{}]",articleid);
+        log.info("文章ID信息：[{}]",permit);
+        // 插入数据库
+        try {
+            return JsonDataResult.buildSuccess(articleDao.deleteArticle(articleid, permit));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return JsonDataResult.buildError("失败");
+        }
+    }
+
     // 修改文章
     @ApiOperation(value = "保存文章", notes = "用户可以将修改好的文章保存到服务器")
     @PostMapping("/updateArticle")

@@ -6,9 +6,10 @@
     <result column="userId" jdbcType="INTEGER" property="userid" />
     <result column="contact" jdbcType="VARCHAR" property="contact" />
     <result column="context" jdbcType="VARCHAR" property="context" />
+    <result column="messageTime" jdbcType="TIMESTAMP" property="messagetime" />
   </resultMap>
   <sql id="Base_Column_List">
-    messageId, userId, contact, context
+    messageId, userId, contact, context, messageTime
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -28,10 +29,10 @@
     where messageId = #{messageid,jdbcType=INTEGER}
   </delete>
   <insert id="insert" keyColumn="messageId" keyProperty="messageid" parameterType="com.example.demo.dgut.model.Message" useGeneratedKeys="true">
-    insert into message (userId, contact, context
-      )
-    values (#{userid,jdbcType=INTEGER}, #{contact,jdbcType=VARCHAR}, #{context,jdbcType=VARCHAR}
-      )
+    insert into message (userId, contact, context,
+      messageTime)
+    values (#{userid,jdbcType=INTEGER}, #{contact,jdbcType=VARCHAR}, #{context,jdbcType=VARCHAR},
+      #{messagetime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="sendMessage" parameterType="com.example.demo.dgut.model.Message">
     insert into message (userId, contact, context)
@@ -49,6 +50,9 @@
       <if test="context != null">
         context,
       </if>
+      <if test="messagetime != null">
+        messageTime,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userid != null">
@@ -59,6 +63,9 @@
       </if>
       <if test="context != null">
         #{context,jdbcType=VARCHAR},
+      </if>
+      <if test="messagetime != null">
+        #{messagetime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -74,6 +81,9 @@
       <if test="context != null">
         context = #{context,jdbcType=VARCHAR},
       </if>
+      <if test="messagetime != null">
+        messageTime = #{messagetime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where messageId = #{messageid,jdbcType=INTEGER}
   </update>
@@ -81,7 +91,8 @@
     update message
     set userId = #{userid,jdbcType=INTEGER},
       contact = #{contact,jdbcType=VARCHAR},
-      context = #{context,jdbcType=VARCHAR}
+      context = #{context,jdbcType=VARCHAR},
+      messageTime = #{messagetime,jdbcType=TIMESTAMP}
     where messageId = #{messageid,jdbcType=INTEGER}
   </update>
 </mapper>

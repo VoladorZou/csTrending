@@ -1,6 +1,5 @@
 package com.example.demo.dgut.dao;
 
-import com.example.demo.dgut.model.Comment;
 import com.example.demo.dgut.model.Message;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;

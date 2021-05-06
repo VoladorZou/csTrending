@@ -17,10 +17,11 @@
     <result column="isDeleted" jdbcType="BIT" property="isdeleted" />
     <result column="views" jdbcType="INTEGER" property="views" />
     <result column="htmlCode" jdbcType="VARCHAR" property="htmlcode" />
+    <result column="articleUrl" jdbcType="VARCHAR" property="articleurl" />
   </resultMap>
   <sql id="Base_Column_List">
     articleId, userId, articleMd, articleHtml, createTime, isPermited, articleTitle,
-    articleCover, `comment`, tag, markdown, thumbsUp, isDeleted, views, htmlCode
+    articleCover, `comment`, tag, markdown, thumbsUp, isDeleted, views, htmlCode, articleUrl
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select
@@ -31,7 +32,7 @@
   <select id="getArticleByUserId" resultType="com.example.demo.dgut.model.Article">
     select *
     from article
-    where userId = #{userid,jdbcType=INTEGER} ORDER BY createTime DESC
+    where userId = #{userid,jdbcType=INTEGER} and isDeleted = false ORDER BY createTime DESC
   </select>
   <select id="getArticleByArticleId" resultType="com.example.demo.dgut.model.Article">
     select *
@@ -44,27 +45,33 @@
     where tag = #{tag,jdbcType=VARCHAR} and isPermited = true order by createTime desc
   </select>
   <select id="getArticleList" resultType="com.example.demo.dgut.model.Article">
-    select * from article
+    select * from article order by createTime desc
   </select>
   <select id="getArticleListByArticle" resultType="com.example.demo.dgut.model.Article">
     select * from article
-    where articleTitle like CONCAT('%',#{articletitle,jdbcType=VARCHAR},'%')
+    where articleTitle like CONCAT('%',#{articletitle,jdbcType=VARCHAR},'%') order by createTime desc
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from article
     where articleId = #{articleid,jdbcType=INTEGER}
   </delete>
+  <insert id="saveArticle" parameterType="com.example.demo.dgut.model.Article">
+    insert into article(userid,articletitle,articlecover,comment,tag,markdown,thumbsup,htmlcode)
+    values (#{userid},#{articletitle},#{articlecover},#{comment},#{tag},#{markdown},#{thumbsup},#{htmlcode})
+  </insert>
   <insert id="insert" keyColumn="articleId" keyProperty="articleid" parameterType="com.example.demo.dgut.model.Article" useGeneratedKeys="true">
     insert into article (userId, articleMd, articleHtml,
       createTime, isPermited, articleTitle,
       articleCover, `comment`, tag,
       markdown, thumbsUp, isDeleted,
-      views, htmlCode)
+      views, htmlCode, articleUrl
+      )
     values (#{userid,jdbcType=INTEGER}, #{articlemd,jdbcType=VARCHAR}, #{articlehtml,jdbcType=VARCHAR},
       #{createtime,jdbcType=TIMESTAMP}, #{ispermited,jdbcType=BIT}, #{articletitle,jdbcType=VARCHAR},
       #{articlecover,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, #{tag,jdbcType=VARCHAR},
       #{markdown,jdbcType=VARCHAR}, #{thumbsup,jdbcType=INTEGER}, #{isdeleted,jdbcType=BIT},
-      #{views,jdbcType=INTEGER}, #{htmlcode,jdbcType=VARCHAR})
+      #{views,jdbcType=INTEGER}, #{htmlcode,jdbcType=VARCHAR}, #{articleurl,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" keyColumn="articleId" keyProperty="articleid" parameterType="com.example.demo.dgut.model.Article" useGeneratedKeys="true">
     insert into article
@@ -111,6 +118,9 @@
       <if test="htmlcode != null">
         htmlCode,
       </if>
+      <if test="articleurl != null">
+        articleUrl,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="userid != null">
@@ -155,12 +165,41 @@
       <if test="htmlcode != null">
         #{htmlcode,jdbcType=VARCHAR},
       </if>
+      <if test="articleurl != null">
+        #{articleurl,jdbcType=VARCHAR},
+      </if>
     </trim>
   </insert>
-  <insert id="saveArticle" parameterType="com.example.demo.dgut.model.Article">
-    insert into article(userid,articletitle,articlecover,comment,tag,markdown,thumbsup,htmlcode)
-    values (#{userid},#{articletitle},#{articlecover},#{comment},#{tag},#{markdown},#{thumbsup},#{htmlcode})
-  </insert>
+  <update id="upLoadArticleCover">
+    update article
+    set articleCover = #{articleCover,jdbcType=VARCHAR}
+    where articleId = #{articleId,jdbcType=INTEGER}
+  </update>
+  <update id="updateMarkdown">
+    update article
+    set markdown = #{markdown,jdbcType=VARCHAR}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="updateArticle" parameterType="com.example.demo.dgut.model.Article">
+    update article
+    set tag = #{tag,jdbcType=VARCHAR} , articleCover = #{articlecover,jdbcType=VARCHAR}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="permitArticle">
+    update article
+    set isPermited = #{isPermited,jdbcType=BIT}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="deleteArticle">
+    update article
+    set isDeleted = #{isDeleted,jdbcType=BIT}
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
+  <update id="recordViews">
+    update article
+    set views = views + 1
+    where articleId = #{articleid,jdbcType=INTEGER}
+  </update>
   <update id="updateByPrimaryKeySelective" parameterType="com.example.demo.dgut.model.Article">
     update article
     <set>
@@ -206,32 +245,10 @@
       <if test="htmlcode != null">
         htmlCode = #{htmlcode,jdbcType=VARCHAR},
       </if>
+      <if test="articleurl != null">
+        articleUrl = #{articleurl,jdbcType=VARCHAR},
+      </if>
     </set>
-    where articleId = #{articleid,jdbcType=INTEGER}
-  </update>
-  <update id="upLoadArticleCover">
-    update user
-    set articleCover = #{articleCover,jdbcType=VARCHAR}
-    where articleId = #{articleId,jdbcType=INTEGER}
-  </update>
-  <update id="updateMarkdown">
-    update article
-    set markdown = #{markdown,jdbcType=VARCHAR}
-    where articleId = #{articleid,jdbcType=INTEGER}
-  </update>
-  <update id="updateArticle" parameterType="com.example.demo.dgut.model.Article">
-    update article
-    set tag = #{tag,jdbcType=VARCHAR} , articleCover = #{articlecover,jdbcType=VARCHAR}
-    where articleId = #{articleid,jdbcType=INTEGER}
-  </update>
-  <update id="permitArticle">
-    update article
-    set isPermited = #{isPermited,jdbcType=BIT}
-    where articleId = #{articleid,jdbcType=INTEGER}
-  </update>
-  <update id="recordViews">
-    update article
-    set views = views + 1
     where articleId = #{articleid,jdbcType=INTEGER}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.example.demo.dgut.model.Article">
@@ -249,7 +266,8 @@
       thumbsUp = #{thumbsup,jdbcType=INTEGER},
       isDeleted = #{isdeleted,jdbcType=BIT},
       views = #{views,jdbcType=INTEGER},
-      htmlCode = #{htmlcode,jdbcType=VARCHAR}
+      htmlCode = #{htmlcode,jdbcType=VARCHAR},
+      articleUrl = #{articleurl,jdbcType=VARCHAR}
     where articleId = #{articleid,jdbcType=INTEGER}
   </update>
 </mapper>

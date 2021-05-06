@@ -1,6 +1,7 @@
 package com.example.demo.dgut.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -58,6 +59,11 @@ public class User implements Serializable {
      * 是否为管理员
      */
     private Boolean isadmin;
+
+    /**
+     * 注册时间
+     */
+    private Date registertime;
 
     private static final long serialVersionUID = 1L;
 }

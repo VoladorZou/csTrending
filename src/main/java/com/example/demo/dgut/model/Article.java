@@ -85,5 +85,10 @@ public class Article implements Serializable {
      */
     private String htmlcode;
 
+    /**
+     * 文章来源
+     */
+    private String articleurl;
+
     private static final long serialVersionUID = 1L;
 }

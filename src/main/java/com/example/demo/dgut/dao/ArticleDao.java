@@ -34,6 +34,9 @@ public interface ArticleDao {
     // 审核文章
     boolean permitArticle(@Param("articleid") int articleid, @Param("isPermited") Boolean isPermited);
 
+    // 删除文章
+    boolean deleteArticle(@Param("articleid") int articleid, @Param("isDeleted") Boolean isDeleted);
+
     // 修改文章
     boolean updateMarkdown(@Param("articleid") int articleid, @Param("markdown") String markdown);
 

@@ -80,6 +80,7 @@ public class UserController {
             User userDB = userService.login(userName, userPassword);
             // userId作为对应的value
             stringRedisTemplate.opsForValue().set(key, userDB.getUserid().toString(), 10, TimeUnit.MINUTES);
+            userDB.setUserpassword("");
             return userDB;
         } catch (Exception e) {
             e.printStackTrace();
@@ -92,7 +93,8 @@ public class UserController {
     public JsonDataResult loginByPhone(@RequestBody User user){
         log.info("用户信息：[{}]",user.toString());
         // 生成Redis中的key
-        key = code.getRandonString(4);
+//        key = code.getRandonString(4);
+        key = UUID.randomUUID().toString().replace("-", "").toLowerCase();
         try {
             User userDB = userService.loginByPhone(user.getPhonenum(), user.getUserpassword());
             // userId作为对应的value
@@ -118,15 +120,14 @@ public class UserController {
             return JsonDataResult.buildError("该手机号已存在");
         }else {
             try {
-//                System.out.println(gotCode);
-//                System.out.println(verifyCode);
                 if(gotCode.length()!=0){
                     if(gotCode.equals(verifyCode)){
                         operationResult = userService.register(user);
                         if(operationResult){
-                            User userDB = login(user.getUsername(),user.getUserpassword());
-                            userDB.setUserpassword("");
-                            return JsonDataResult.buildSuccess(userDB);
+                            return JsonDataResult.buildSuccess(operationResult);
+//                            User userDB = login(user.getUsername(),user.getUserpassword());
+//                            userDB.setUserpassword("");
+//                            return JsonDataResult.buildSuccess(userDB);
                         }else {
                             return JsonDataResult.buildError("注册失败");
                         }

@@ -1,6 +1,7 @@
 package com.example.demo.dgut.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import lombok.Data;
 
 /**
@@ -28,6 +29,11 @@ public class Message implements Serializable {
      * 留言
      */
     private String context;
+
+    /**
+     * 留言时间
+     */
+    private Date messagetime;
 
     private static final long serialVersionUID = 1L;
 }
