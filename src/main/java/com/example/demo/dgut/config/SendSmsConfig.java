@@ -18,8 +18,8 @@ public class SendSmsConfig {
     // 设置公共请求参数，初始化Client。
     private DefaultProfile profile = DefaultProfile.getProfile(
           "cn-hangzhou",// API支持的地域ID，如短信API的值为：cn-hangzhou。
-          "LTAI4GF8SrHS8BhM8H5eASUW",// 您的AccessKey ID。
-          "WMYx7Hc7iy8XlBpHyAVcUJ0CchPljc");// 您的AccessKey Secret。
+          "",// 您的AccessKey ID。
+          "");// 您的AccessKey Secret。
     private IAcsClient client = new DefaultAcsClient(profile);
 
     private static void log_print(String functionName, Object result) {
